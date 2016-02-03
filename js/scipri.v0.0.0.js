@@ -65,6 +65,189 @@ var sP = (function() {
 		return Math.round(n * Math.pow(10,x))/Math.pow(10,x);
 	};
 
+	/**
+	 * 
+	 * 	A set of methods to draw  scalable, responsive selector switchs as svg using d3js and pymjs.
+	 *	
+	 *	Page must have d3. will work with pymjs on a resize if pym is present and the the adjustment information is passed in.
+	 *	If pym is not present don't pass a p argument in and the scaling will default to 1. 
+	 *
+	 *	This is a fairly fragile and opinionated set of methods but used properly will save time in adding svg switch elements to illustrations.
+	 *
+	 *
+	 *
+	 */
+
+	lib.swtch = {
+	
+		/**
+		 * Takes an object with the switch information and makes the switch using d3
+		 *
+		 *	@param {Array} d3 array/object - the d3 svg element the switch is to be installed into 
+		 *	@param {Object} o - an object created with Object.create(swtchObjProto)... 
+		 *
+		 */
+		renderSwtch: function(svg, o) {
+	
+			var i, iMax,
+				tmpEl,
+				atr,
+				sty,
+				txt,
+				swtchEl = svg.append("g")
+					.attr("id", o.id)
+					.attr("class", o["class"])
+					.attr("swpos", o.swpos)
+					.attr("transform", "translate(" + o.gtX + "," + o.gtY + ")");
+
+
+			iMax = o.elements.length;
+	
+			for (i = 0; i < iMax; i += 1) {
+				tmpEl = o.elements[i];
+
+				if (tmpEl.type === "text") {
+					swtchEl
+						.append(tmpEl.type)
+						.attr(tmpEl.attr)
+						.style(tmpEl.style)
+						.text(tmpEl.text);
+				} else { // not a text element
+					swtchEl
+						.append(tmpEl.type)
+						.attr(tmpEl.attr)
+						.style(tmpEl.style);
+				}
+	
+			}
+	
+		},
+		/**
+		 * Uses an Object.create call to make a switch object using the swtchObjProto as the prototype
+		 *
+		 *	@param {Object} o an object that contains information about the Switch
+		 *	@param {Object} p an object that contains svg size information for scaling. If noting is passed in it has a default that does no scaling. 
+		 *
+		 */
+		newSwtch: function(o,p) {
+
+			var p = p || {oW: 1, aR: 1, oH: 1, nW: 1, nH: 1}; // default will not scale
+	
+			var switchPosAdjust = o.swpos === "left" ? 0 : 45 * p.nW / p.oW; 
+	
+			var newObj = {
+				"class": "noselect",
+				"elements": [
+				{
+					"name": "bkgrnd",
+					"type": "rect",
+					"id": o.id + "bkgrnd",
+
+					"attr": {
+						"x": 0,
+						"y": 0, 
+						"ry": p.nH * 6/p.oH,
+						"height": p.nH * 30/p.oH, 
+						"width": p.nW * 90/p.oW
+					},
+					"style": {
+						"fill": "#ffffff",
+						"stroke": "#232323",
+						"stroke-width": p.nW * 1.5/ p.oW
+					}
+				},
+				{
+					"name": "txtleft",
+					"type": "text",
+					"id": o.id + "txtleft",
+					"attr": {
+						"x": p.nW * 80/p.oW,
+						"y": p.nH * 17.5/p.oH,
+						"text-anchor": "end",
+						"alignment-baseline": "middle",
+						"font-size": (p.nW * 20/p.oW) + "px"	
+					},
+					"style": {},
+					"text": o.rightTxt
+				},
+				{
+					"name": "txtRight",
+					"type": "text",
+					"id": o.id + "txtRight",
+					"attr": {
+						"x": p.nW * 10/p.oW,
+						"y": p.nH * 17.5/p.oH,
+						"text-anchor": "start",
+						"alignment-baseline": "middle",
+						"font-size": (p.nW * 20/p.oW) + "px"	
+					},
+					"style": {},
+					"text":	o.leftTxt 
+				},	
+				{
+					"name": "tglswtch",
+					"type": "rect",
+					"id": o.id + "tglswtch",
+					"attr": {
+						"id": o.id + "swtgl",
+						"x": switchPosAdjust,
+						"y": 0,
+						"ry": p.nH * 6/p.oH,
+						"height": p.nH * 30/p.oH,
+						"width": p.nW * 45/p.oW
+					},
+					"style": {
+						"fill": "#3bb084",
+						"stroke": "#232323",
+						"stroke-width":  p.nW * 1.5/ p.oW
+					}
+				},
+				{
+					"name": "label",
+					"type": "text",
+					"id":  o.id + "label", 			
+					"attr": {
+						"x": 0,
+						"y": p.nH * -7/p.oH,
+						"text-anchor": "start",
+						"alignment-baseline": "middle",
+						"font-size": (p.nW * 14/p.oW) + "px"
+					},
+					"style": {},
+					"text": o.label
+
+				}
+					], // end elements array
+				gtX: p.nW * o.gtX/p.oW,
+				gtY: p.nH * o.gtY/p.oH,
+				id: o.id,
+				swpos: "left"	
+			}; // end object
+
+
+			return newObj;
+	
+		}, // end switchObjectProto function; 
+		toggleSwitch: function(svg, o, p) {
+			var adjst = 0,
+			p = p || {oW: 1, aR: 1, oH: 1, nW: 1, nH: 1}; // default will not scale
+
+			if (o.swpos === "left") {
+				o.swpos = "right";
+				adjst = 45;
+			} else {
+				o.swpos = "left";
+				adjst = 0;
+			}
+
+		
+			var moveSwitch = svg.select("#" + o.id + "swtgl")
+				.attr("x", p.nW * adjst / p.oW);
+
+			var pauseVar;
+		}
+	}; // end lib.swtch object 
+
 
 	// Private methods and variables:
 	
