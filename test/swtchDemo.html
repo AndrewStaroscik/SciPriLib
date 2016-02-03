@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Sp switch creation demo</title>
+</head>
+
+<body>
+
+<div id='mainFrame'>
+
+</div>
+<!-- css -->
+<link href="../css/scipri.v0.0.0.css" rel="stylesheet" type="text/css"/> 
+
+<!-- js -->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript" src="http://sciprim.com/js/d3.v3_a.min.js"></script>
+<script type="text/javascript" src="../js/scipri.v0.0.0.js"></script>
+<script type="text/javascript">
+	var svg = d3.select("#mainFrame").append("svg")
+		.attr("width", 500)
+		.attr("height", 500),
+		demoSwitch = {
+			gtX: 50,
+			gtY: 50,
+			id: "deomswitch",
+			swpos: "left",
+			leftTxt: "On",
+			rightTxt: "Off",
+			label: "Label for switch"	
+		}
+		switchElement = sP.swtch.newSwtch(demoSwitch); // not passing anything in for pym will default to 1.
+		
+		sP.swtch.renderSwtch(svg, switchElement);	
+		
+		var switchListener = svg.select("#" + demoSwitch.id)
+			.on("click", function() {
+				sP.swtch.toggleSwitch(svg,demoSwitch) // again not passing any pym info in will default to 1.		
+				// Other response elements go here. 
+				// The library takes care of the state of the switch, but the link between the state of the switch and the rest of the illustration 
+				//    needs to be tracked separately. 
+			});
+
+	
+
+
+</script>
+<!-- SciencePrimer.com Andrew Staroscik 2011-2014 --!>
+
+</body>
+</html>
+
