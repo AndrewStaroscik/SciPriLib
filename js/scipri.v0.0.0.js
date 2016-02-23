@@ -1,4 +1,4 @@
-/** Andrew Staroscik 2011-2016 
+	/** Andrew Staroscik 2011-2016 
   * SciencePrimer.com
   *
   * Main script for sPLib v0.1
@@ -49,6 +49,64 @@ var sP = (function() {
 
 		return returnObj;
 	}
+
+	lib.pF = {}; // container for pym functions (I don't know why I named it pF. Maybe the f is associated with the f in iFrame?)
+
+	/**
+	 * For resizing a div element based on a pym resize - kind of weirdly written. As written dim[0] and max have to be the same thing. 
+	 *  The starting point is the size of the element at max size so it should never exceed that. of the cW parameter exceedes max it will 
+	 *  be set to max. 
+	 *
+	 * 	@param {String} id the id of the div (needs an id (#) or class (.) prefix
+	 *	@param {Array} dim width and height of element at full size in the form of [w,h]
+	 *	@param {Number} cW the current width of the container will be used to scale to element appropriatly  
+	 *	@param {Number} aR the aspect ratio of full size main div width/height 
+	 *	@param {Number} max Max width of the containing div - div won't get any bigger than this should dim[0]
+	 *	@param {Number} min Min width of the containing div - div won't get any smaller than this
+	 *
+	 *	No return side effect is using jQuery to resize the element. 
+	 *
+	 */
+	lib.pF.setFrame = function(id, dim, cW, aR, max, min) {
+
+		var w = dim[0],
+			h = dim[1];
+
+		cW = cW < max ? cW : max;
+		cW = cW > min ? cW : min;
+
+		var width = (w * cW / max) + "px",
+			height = (h * cW / max) + "px";
+	
+		// don't want to use jQuery 
+
+		var el = document.getElementById(id);
+
+		el.style.width = width;
+		el.style.height = height;
+
+		//$(id).css("width", width);
+
+		//$(id).css("height", height);
+		
+
+	
+	}; // end lib.pF.setFrame() method
+	/**
+	 * 	Returns the scaled value of a number passed in with the new and old Widths/Heights
+	 *
+	 * 	@param {Number} v the value to adjust
+	 * 	@param {Number} n newWidth or height
+	 * 	@param {Number} o original width or height 
+	 * 	@param {Number} aR aspect ratio if height change is needed. will default to 1 if nothing entered. 
+	 *
+	 */
+	lib.pF.scEl = function(v,n,o, aR) {
+
+		aR = aR || 1;
+
+		return (v * n / o) * aR;
+	}; // end lib.pF.scEl() method.
 
 	/**
 	 * Function returns a number rounded to the sepcified number of decimal points. 
