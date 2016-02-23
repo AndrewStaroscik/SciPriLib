@@ -60,14 +60,13 @@ var sP = (function() {
 	 * 	@param {String} id the id of the div (needs an id (#) or class (.) prefix
 	 *	@param {Array} dim width and height of element at full size in the form of [w,h]
 	 *	@param {Number} cW the current width of the container will be used to scale to element appropriatly  
-	 *	@param {Number} aR the aspect ratio of full size main div width/height 
 	 *	@param {Number} max Max width of the containing div - div won't get any bigger than this should dim[0]
 	 *	@param {Number} min Min width of the containing div - div won't get any smaller than this
 	 *
-	 *	No return side effect is using jQuery to resize the element. 
+	 *	No return side effect is using basic js to resize the element. 
 	 *
 	 */
-	lib.pF.setFrame = function(id, dim, cW, aR, max, min) {
+	lib.pF.setFrame = function(id, dim, cW, max, min) {
 
 		var w = dim[0],
 			h = dim[1];
@@ -79,18 +78,11 @@ var sP = (function() {
 			height = (h * cW / max) + "px";
 	
 		// don't want to use jQuery 
-
 		var el = document.getElementById(id);
 
 		el.style.width = width;
 		el.style.height = height;
 
-		//$(id).css("width", width);
-
-		//$(id).css("height", height);
-		
-
-	
 	}; // end lib.pF.setFrame() method
 	/**
 	 * 	Returns the scaled value of a number passed in with the new and old Widths/Heights
